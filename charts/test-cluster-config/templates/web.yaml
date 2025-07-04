@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  name: web
+  namespace: argocd
+spec:
+  destination:
+    name: in-cluster
+    namespace: web
+  project: default
+  source:
+    helm:
+      ignoreMissingValueFiles: true
+      valueFiles:
+        - values.yaml
+      values: |
+        revision: main
+    path: charts/web
+    repoURL: https://github.com/tback/argotest.git
+    targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
